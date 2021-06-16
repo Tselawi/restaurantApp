@@ -133,7 +133,6 @@
                 url: "/cashier/confirmOrderStatus",
                 success: function(data){
                     $('#order-detail').html(data);
-                    window.location.href= "/cashier";
                 }
             });
         });
@@ -148,6 +147,38 @@
                     "saleDetail_id" : saleDetailID
                 },
                 url: "/cashier/deleteSaleDetail",
+                success: function(data){
+                    $("#order-detail").html(data);
+                }
+            });
+        });
+
+        // increase quantity
+        $("#order-detail").on("click", ".btn-increase-quantity", function(){
+            var saleDetailID = $(this).data("id");
+            $.ajax({
+                type:"POST",
+                data:{
+                    "_token" : $('meta[name="csrf-token"]').attr('content'),
+                    "saleDetail_id" : saleDetailID
+                },
+                url: "/cashier/increase-quantity",
+                success: function(data){
+                    $("#order-detail").html(data);
+                }
+            });
+        });
+
+        // decrease quantity
+        $("#order-detail").on("click", ".btn-decrease-quantity", function(){
+            var saleDetailID = $(this).data("id");
+            $.ajax({
+                type:"POST",
+                data:{
+                    "_token" : $('meta[name="csrf-token"]').attr('content'),
+                    "saleDetail_id" : saleDetailID
+                },
+                url: "/cashier/decrease-quantity",
                 success: function(data){
                     $("#order-detail").html(data);
                 }

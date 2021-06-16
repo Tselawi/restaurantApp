@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Management;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\support\Facades\Hash;
 use App\User;
 
 class UserController extends Controller
@@ -26,7 +27,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        return view('management.createUser');
     }
 
     /**
@@ -37,7 +38,21 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|unique:users|max:255',
+            'email' => 'required|email|unique:users|max:255',
+            'password' => 'required|min:6',
+            'role' => 'required'
+        ]);
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+        $user->role = $request->role;
+        $user->save();
+        $request->session()->flash('status', $request->name. ' is created successfully');
+        return redirect('/management/user');
+
     }
 
     /**
@@ -59,7 +74,9 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = User::find($id);
+        return view('management.editUser')->with('user', $user);
+
     }
 
     /**
@@ -71,7 +88,20 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'name' => 'required|max:255',
+            'email' => 'required|email|max:255',
+            'password' => 'required|min:6',
+            'role' => 'required'
+        ]);
+        $user = User::find($id);
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+        $user->role = $request->role;
+        $user->save();
+        $request->session()->flash('status', $request->name. ' is updated successfully');
+        return redirect('/management/user');
     }
 
     /**
@@ -82,6 +112,8 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        User::destroy($id);
+        session()->flash('status', 'The user is deleted successfully');
+        return redirect('/management/user');
     }
 }

@@ -131,12 +131,17 @@ class CashierController extends Controller
             <tbody>';
             $showBtnPayment = true;
             foreach($saleDetails as $saleDetail){
-               
+                    
+                $decreaseButton = '<button data-id="'.$saleDetail->id.'" class="btn btn-danger btn-sm btn-decrease-quantity disabled">-</button>';
+
+               if($saleDetail->quantity > 1){
+                    $decreaseButton = '<button data-id="'.$saleDetail->id.'" class="btn btn-danger btn-sm btn-decrease-quantity">-</button>';
+               }
                 $html .='
                 <tr>
                     <td>'.$saleDetail->menu_id.'</td>
                     <td>'.$saleDetail->menu_name.'</td>
-                    <td>'.$saleDetail->quantity.'</td>
+                    <td>'.$decreaseButton.' '.$saleDetail->quantity.' <button data-id="'.$saleDetail->id.'" class="btn btn-primary btn-sm btn-increase-quantity">+</button></td>
                     <td>'.$saleDetail->menu_price.'</td>
                     <td>'.($saleDetail->menu_price * $saleDetail->quantity).'</td>';
                     if($saleDetail->status == "noConfirm"){
@@ -167,6 +172,38 @@ class CashierController extends Controller
            return $html;
     }
 
+    public function increaseQuantity(Request $request){
+        $saleDetail_id = $request->saleDetail_id;
+        //update quantity
+        $saleDetail = SaleDetail::where('id', $saleDetail_id)->first();
+        $saleDetail->quantity = $saleDetail->quantity + 1;
+        $saleDetail->save();
+
+        //update total amount
+        $sale = Sale::where('id', $saleDetail->sale_id)->first();
+        $sale->total_price = $sale->total_price + $saleDetail->menu_price;
+        $sale->save();
+
+        $html = $this->getSaleDetails($saleDetail->sale_id);
+        return $html;
+    }
+
+    public function decreaseQuantity(Request $request){
+        $saleDetail_id = $request->saleDetail_id;
+        //update quantity
+        $saleDetail = SaleDetail::where('id', $saleDetail_id)->first();
+        $saleDetail->quantity = $saleDetail->quantity - 1;
+        $saleDetail->save();
+
+        //update total amount
+        $sale = Sale::where('id', $saleDetail->sale_id)->first();
+        $sale->total_price = $sale->total_price - $saleDetail->menu_price;
+        $sale->save();
+
+        $html = $this->getSaleDetails($saleDetail->sale_id);
+        return $html;
+    }
+
     public function confirmOrderStatus(Request $request){
         $sale_id = $request->sale_id;
         $saleDetails = saleDetail::where('sale_id', $sale_id)->update(['status'=>'confirm']);
@@ -186,12 +223,14 @@ class CashierController extends Controller
         $sale->total_price = $sale->total_price - $menu_price;
         $sale->save();
         // check if there any saledetail having the sale
-        $saleDetail = SaleDetail::where('sale_id', $sale_id)->first();
+        $saleDetails = SaleDetail::where('sale_id', $sale_id)->first();
         if($saleDetail){
             $html= $this->getSaleDetails($sale_id);
         }else{
             $html .= "Not Found Any Sale Details for the Selected Table";
         }
+        //update table status
+        
         return $html;
     }
 

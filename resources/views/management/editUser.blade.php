@@ -34,11 +34,11 @@
           <div class="form-group">
             <label for="Role">Role</label>
             <select name="role" class="form-control">
-              <option value="admin" {{$user->role == 'admin' ? 'selected':''}}>Admin</option>
-              <option value="cashier" {{$user->role == 'cashier' ? 'selected':''}}>Cashier</option>
+            <option value="admin" {{$user->role == 'admin' ? 'selected' : ''}}>Admin</option>
+            <option value="cashier" {{$user->role == 'cashier' ? 'selected' : ''}}>Cashier</option>
             </select>
           </div>
-        
+
           <button type="submit" class="btn btn-primary">Save</button>
         </form>
       </div>

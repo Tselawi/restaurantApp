@@ -11,11 +11,13 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// }); // to show the welcome page 
 
-Auth::routes();
+Route::get('/', 'HomeController@index'); // take me direct to login page
+
+Auth::routes(['register' => false, 'reset' => false]); // put false to disable the resgister page
 
 Route::get('/home', 'HomeController@index')->name('home');
 
@@ -29,11 +31,15 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/cashier/getSaleDetailsByTable/{table_id}', 'Cashier\CashierController@getSaleDetailsByTable');
     
     Route::post('/cashier/orderFood', 'Cashier\CashierController@orderFood');
+
     Route::post('/cashier/deleteSaleDetail', 'Cashier\CashierController@deleteSaleDetail');
+    Route::post('/cashier/increase-quantity', 'Cashier\CashierController@increaseQuantity');
+    Route::post('/cashier/decrease-quantity', 'Cashier\CashierController@decreaseQuantity');
+    
     Route::post('/cashier/confirmOrderStatus', 'Cashier\CashierController@confirmOrderStatus');
     Route::post('/cashier/savePayment', 'Cashier\CashierController@savePayment');
     Route::get('/cashier/showReceipt/{saleID}', 'Cashier\CashierController@showReceipt');
-
+    
 });
 
 Route::middleware(['auth', 'VerifyAdmin'])->group(function(){
