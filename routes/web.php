@@ -15,11 +15,11 @@
 //     return view('welcome');
 // }); // to show the welcome page 
 
-Route::get('/http://small-restaurant-app.herokuapp.com', 'HomeController@index'); // take me direct to login page
+Route::get('/', 'HomeController@index'); // take me direct to login page
 
 Auth::routes(['register' => false, 'reset' => false]); // put false to disable the resgister page
 
-Route::get('http://small-restaurant-app.herokuapp.com/home', 'HomeController@index')->name('home');
+Route::get('/home', 'HomeController@index')->name('home');
 
 // for the user if he auth
 Route::middleware(['auth'])->group(function(){
