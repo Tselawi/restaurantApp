@@ -25,7 +25,7 @@
           <label for="menuPrice">Price</label>
           <div class="input-group mb-3">
             <div class="input-group-prepend">
-              <span class="input-group-text">$</span>
+              <span class="input-group-text">€</span>
             </div>
             <input type="text" name="price" class="form-control" aria-label="Amount (to the nearest dollor)">
             <div class="input-group-append">
@@ -53,7 +53,6 @@
             <select class="form-control" name="category_id">
               @foreach ($categories as $category)
                 <option value="{{$category->id}}">{{$category->name}}</option>
-
               @endforeach
             </select>
           </div>

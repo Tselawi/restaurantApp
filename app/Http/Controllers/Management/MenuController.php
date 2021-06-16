@@ -28,7 +28,7 @@ class MenuController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('/management.createMenu')->with('categories', $categories);
+        return view('management.createMenu')->with('categories', $categories);
     }
 
     /**
